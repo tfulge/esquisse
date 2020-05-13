@@ -13,70 +13,65 @@
 #' @importFrom shiny icon checkboxInput
 #'
 chartControlsUI <- function(id, insert_code = FALSE, disable_filters = FALSE) {
-
+  
   # Namespace
   ns <- NS(id)
-
+  
   # ui
-  tags$div(
-    class = "btn-group-charter btn-group-justified-charter",
-    tags$style(sprintf(
-      "#%s .sw-dropdown-in {margin: 8px 0 8px 10px !important; padding: 0 !important;}",
-      "sw-content-filterdrop"
-    )),
-    dropdown(
-      controls_labs(ns),
-      inputId = "labsdrop",
-      style = "default",
-      label = "Labels & Title", 
-      up = TRUE, 
-      icon = icon("font"), 
-      status = "default btn-controls"
-    ),
-    dropdown(
-      controls_params(ns), 
-      controls_appearance(ns),
-      style = "default",
-      label = "Plot options",
-      up = TRUE, 
-      inputId = "paramsdrop",
-      icon = icon("gears"), 
-      status = "default btn-controls"
-    ),
-    if (!isTRUE(disable_filters)) {
-      dropdown(
-        filterDF_UI(id = ns("filter-data")),
-        style = "default", 
-        label = "Data", 
-        up = TRUE, 
-        icon = icon("filter"),
-        right = TRUE, 
-        inputId = "filterdrop",
-        status = "default btn-controls"
-      )
-    },
-    dropdown(
-      controls_code(ns, insert_code = insert_code), 
-      style = "default", 
-      label = "Export & code", 
-      up = TRUE,
-      right = TRUE, 
-      inputId = "codedrop",
-      icon = icon("code"), 
-      status = "default btn-controls"
-    ),
-    # tags$script("$('.sw-dropdown').addClass('btn-group-charter');"),
-    # tags$script(HTML("$('.sw-dropdown > .btn').addClass('btn-charter');")),
-    # tags$script("$('#sw-content-filterdrop').click(function (e) {e.stopPropagation();});"),
+  tagList(
     tags$div(
-      style = "display: none;",
-      checkboxInput(
-        inputId = ns("disable_filters"), 
-        label = NULL, 
-        value = isTRUE(disable_filters)
-      )
+      class = "btn-group-charter btn-group-justified-charter",
+      tags$style(sprintf(
+        "#%s .sw-dropdown-in {margin: 8px 0 8px 10px !important; padding: 0 !important;}",
+        "sw-content-filterdrop"
+      )),
+      dropdown(
+        controls_labs(ns),
+        inputId = "labsdrop",
+        style = "default",
+        label = "Labels", 
+        up = FALSE, 
+        icon = icon("font"), 
+        status = "default btn-controls"
+      ),
+      dropdown(
+        controls_params(ns), 
+        controls_appearance(ns),
+        style = "default",
+        label = "Options",
+        up = FALSE, 
+        inputId = "paramsdrop",
+        icon = icon("gears"), 
+        status = "default btn-controls"
+      ),
+      
+      dropdown(
+        controls_code(ns, insert_code = insert_code), 
+        style = "default", 
+        label = "Export", 
+        up = FALSE,
+        right = FALSE, 
+        inputId = "codedrop",
+        icon = icon("code"), 
+        status = "default btn-controls"
+      ),
+      # tags$script("$('.sw-dropdown').addClass('btn-group-charter');"),
+      # tags$script(HTML("$('.sw-dropdown > .btn').addClass('btn-charter');")),
+      # tags$script("$('#sw-content-filterdrop').click(function (e) {e.stopPropagation();});"),
+      tags$div(
+        style = "display: none;",
+        checkboxInput(
+          inputId = ns("disable_filters"), 
+          label = NULL, 
+          value = isTRUE(disable_filters)
+        )
+      ),
+      useShinyUtils()
     ),
-    useShinyUtils()
+    tags$div(
+      style = "overflow-y:scroll;height:100%;width:100%;padding:10px",
+      filterDF_UI(id = ns("filter-data"))
+    )
   )
 }
 
@@ -114,7 +109,7 @@ chartControlsServer <- function(input, output, session,
                                 use_facet = shiny::reactive(FALSE), 
                                 use_transX = shiny::reactive(FALSE), 
                                 use_transY = shiny::reactive(FALSE)) {
-
+  
   ns <- session$ns
   
   
@@ -233,7 +228,7 @@ chartControlsServer <- function(input, output, session,
   observeEvent(use_transY(), {
     toggleDisplay(id = ns("controls-scale-trans-y"), display = isTRUE(use_transY()))
   })
-
+  
   observeEvent(type$palette, {
     toggleDisplay(id = ns("controls-palette"), display = isTRUE(type$palette))
     toggleDisplay(id = ns("controls-spectrum"), display = !isTRUE(type$palette))
@@ -255,7 +250,7 @@ chartControlsServer <- function(input, output, session,
     data_table = data_table, 
     data_name = data_name
   )
-
+  
   outin <- reactiveValues(
     inputs = NULL, 
     export_ppt = NULL, 
@@ -266,7 +261,7 @@ chartControlsServer <- function(input, output, session,
     outin$data <- data_table()
     outin$code <- reactiveValues(expr = NULL, dplyr = NULL)
   })
-
+  
   observeEvent({
     all_inputs <- reactiveValuesToList(input)
     all_inputs[grep(pattern = "filter-data", x = names(all_inputs), invert = TRUE)]
@@ -369,7 +364,7 @@ chartControlsServer <- function(input, output, session,
       outin$code <- output_filter$code
     }
   })
-
+  
   return(outin)
 }
 
@@ -421,11 +416,11 @@ controls_labs <- function(ns) {
 #' @importFrom htmltools tagList tags
 #' @importFrom shinyWidgets pickerInput radioGroupButtons spectrumInput
 controls_appearance <- function(ns) {
-
+  
   themes <- get_themes()
   cols <- get_colors()
   pals <- get_palettes()
-
+  
   tagList(
     
     tags$style(

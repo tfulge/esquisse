@@ -25,7 +25,9 @@ Imports: miniUI,
     scales,
     stringi,
     rlang (>= 0.3.1),
-    grDevices
+    grDevices,
+    shinydashboard,
+    plotly
 Suggests: 
     officer,
     rvg,

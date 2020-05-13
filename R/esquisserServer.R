@@ -124,9 +124,8 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
       )
     })
   )
-
   
-  output$plooooooot <- renderPlot({
+  shiny::observe({
     req(input$play_plot, cancelOutput = TRUE)
     req(dataChart$data)
     req(paramsChart$data)
@@ -134,7 +133,7 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
     req(input$geom)
     
     aes_input <- make_aes(input$dragvars$target)
-
+    
     req(unlist(aes_input) %in% names(dataChart$data))
     
     mapping <- build_aes(
@@ -175,7 +174,7 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
     
     scales_args <- scales$args
     scales <- scales$scales
-
+    
     if (isTRUE(paramsChart$transX$use)) {
       scales <- c(scales, "x_continuous")
       scales_args <- c(scales_args, list(x_continuous = paramsChart$transX$args))
@@ -215,7 +214,7 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
       xlim = xlim,
       ylim = ylim
     )
-
+    
     ggplotCall$code <- expr_deparse(gg_call, width = 1e4)
     ggplotCall$call <- gg_call
     
@@ -223,6 +222,19 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
       expr = gg_call, 
       data = setNames(list(data), dataChart$name)
     )
+  })
+  
+  output$datatable <- DT::renderDT({
+    paramsChart$data
+  })
+  
+  output$plotly <- plotly::renderPlotly({
+    plotly::ggplotly(ggplotCall$ggobj$plot)
+  })
+
+  
+  output$plooooooot <- renderPlot({
+    
     ggplotCall$ggobj$plot
   })
 

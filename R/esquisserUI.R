@@ -77,65 +77,67 @@ esquisserUI <- function(id, header = TRUE,
         disable_filters = disable_filters
       ),
       # page
-      layoutAddin(
-        top_left = htmltools::tagList(
-          htmltools::tags$div(
-            style = if (isTRUE(choose_data) & !isTRUE(header)) "padding: 10px;" else "padding: 8px; height: 108%;",
-            dropInput(
-              inputId = ns("geom"),
-              choicesNames = geomIcons()$names, 
-              choicesValues = geomIcons()$values,
-              dropWidth = "290px",
-              width = "100%"
-            ),
-            if (isTRUE(choose_data) & !isTRUE(header)) chooseDataUI(id = ns("choose-data"))
-          )
-        ),
-        top_right = dragulaInput(
-          inputId = ns("dragvars"), 
-          sourceLabel = "Variables", 
-          targetsLabels = c("X", "Y", "Fill", "Color", "Size", "Group", "Facet", "FacetRow", "FacetCol"), 
-          targetsIds = c("xvar", "yvar", "fill", "color", "size", "group", "facet", "facet_row", "facet_col"),
-          choices = "",
-          badge = FALSE, 
-          width = "100%", 
-          height = "100%",
-          replace = TRUE
-        ),
-        main = htmltools::tags$div(
-          style = "margin-top: 10px; padding-bottom: 25px; height: 100%;",
-          tags$div(
-            style = "position: absolute; right: 0; top: 10px; font-weight: bold; z-index: 1000;",
-            prettyToggle(
-              inputId = ns("play_plot"), 
-              value = TRUE,
-              label_on = "Play",
-              label_off = "Pause",
-              outline = TRUE,
-              plain = TRUE,
-              bigger = TRUE, 
-              inline = TRUE,
-              icon_on = icon("play-circle-o", class = "fa-2x"),
-              icon_off = icon("pause-circle-o", class = "fa-2x")
+      tags$div(
+        style = "height:100%;width:100%;overflow-y:scroll",
+        layoutAddin(
+          top_left = htmltools::tagList(
+            htmltools::tags$div(
+              style = if (isTRUE(choose_data) & !isTRUE(header)) "padding: 10px;" else "padding: 8px; height: 108%;",
+              dropInput(
+                inputId = ns("geom"),
+                choicesNames = geomIcons()$names, 
+                choicesValues = geomIcons()$values,
+                dropWidth = "290px",
+                width = "100%"
+              ),
+              if (isTRUE(choose_data) & !isTRUE(header)) chooseDataUI(id = ns("choose-data"))
             )
           ),
-          shinydashboard::tabBox(
-            width = 12,
-            shiny::tabPanel(
-              title = "ggplot2",
-              shiny::plotOutput(outputId = ns("plooooooot"), width = "100%", height = "800px")
+          top_right = dragulaInput(
+            inputId = ns("dragvars"), 
+            sourceLabel = "Variables", 
+            targetsLabels = c("X", "Y", "Fill", "Color", "Size", "Group", "Facet", "FacetRow", "FacetCol"), 
+            targetsIds = c("xvar", "yvar", "fill", "color", "size", "group", "facet", "facet_row", "facet_col"),
+            choices = "",
+            badge = FALSE, 
+            width = "100%", 
+            height = "100%",
+            replace = TRUE
+          ),
+          main = htmltools::tags$div(
+            style = "margin-top: 10px; padding-bottom: 25px; height: 100%;",
+            tags$div(
+              style = "position: absolute; right: 0; top: 10px; font-weight: bold; z-index: 1000;",
+              prettyToggle(
+                inputId = ns("play_plot"), 
+                value = TRUE,
+                label_on = "Play",
+                label_off = "Pause",
+                outline = TRUE,
+                plain = TRUE,
+                bigger = TRUE, 
+                inline = TRUE,
+                icon_on = icon("play-circle-o", class = "fa-2x"),
+                icon_off = icon("pause-circle-o", class = "fa-2x")
+              )
             ),
-            shiny::tabPanel(
-              title = "plotly",
-              plotly::plotlyOutput(outputId = ns("plotly"), width = "100%", height = "800px")
-            ),
-            shiny::tabPanel(
-              title = "datatable",
-              DT::DTOutput(ns("datatable"))
+            shinydashboard::tabBox(
+              width = 12,
+              shiny::tabPanel(
+                title = "ggplot2",
+                shiny::plotOutput(outputId = ns("plooooooot"), width = "100%", height = "800px")
+              ),
+              shiny::tabPanel(
+                title = "plotly",
+                plotly::plotlyOutput(outputId = ns("plotly"), width = "100%", height = "800px")
+              ),
+              shiny::tabPanel(
+                title = "datatable",
+                DT::DTOutput(ns("datatable"))
+              )
             )
           )
         )
-        
       )
       
       

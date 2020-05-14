@@ -14,7 +14,9 @@
 #'  renderPlot stopApp plotOutput showNotification isolate reactiveValuesToList
 #' @importFrom ggplot2 ggplot_build ggsave
 #' @import ggplot2
-#' @importFrom rlang expr_deparse
+#' @importFrom rlang expr_deparse is_character
+#' @importFrom dplyr mutate_if
+#' @importFrom forcats as_factor
 #'
 esquisserServer <- function(input, output, session, data = NULL, dataModule = c("GlobalEnv", "ImportFile"), sizeDataModule = "m") {
   
@@ -225,7 +227,7 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
   })
   
   output$datatable <-
-    DT::renderDT({paramsChart$data}, 
+    DT::renderDT({paramsChart$data %>% mutate_if(is_character, as_factor)}, 
                  filter = 'top',
                  extensions = c('Buttons',  'ColReorder', 'FixedHeader', 'KeyTable'),
                  options = list(

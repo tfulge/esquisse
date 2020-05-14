@@ -27,12 +27,14 @@ Imports: miniUI,
     rlang (>= 0.3.1),
     grDevices,
     shinydashboard,
-    plotly
+    plotly,
+    dplyr,
+    forcats,
+    DT
 Suggests: 
     officer,
     rvg,
     rio,
-    DT,
     testthat (>= 2.1.0),
     knitr,
     ggthemes,

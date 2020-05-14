@@ -134,7 +134,7 @@ esquisserUI <- function(id, header = TRUE,
               shiny::tabPanel(
                 title = "datatable",
                 tags$div(
-                  style = "width:100%;overflow-x:scroll",
+                  style = "height:800px;width:100%;overflow-x:scroll;overflow-y:scroll",
                   DT::DTOutput(ns("datatable"))
                 )
               )

@@ -24,7 +24,7 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
     dataChart$data <- data$data
     dataChart$name <- data$name
   }, ignoreInit = FALSE)
-
+  
   dataChart <- callModule(
     module = chooseDataServer, 
     id = "choose-data",
@@ -51,7 +51,7 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
       badge = FALSE
     )
   })
-
+  
   geom_possible <- reactiveValues(x = "auto")
   geom_controls <- reactiveValues(x = "auto")
   observeEvent(list(input$dragvars$target, input$geom), {
@@ -64,7 +64,7 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
       )
     )
     geom_possible$x <- c("auto", geoms)
-
+    
     geom_controls$x <- select_geom_controls(input$geom, geoms)
     
     if (!is.null(input$dragvars$target$fill) | !is.null(input$dragvars$target$color)) {
@@ -87,7 +87,7 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
       disabled = setdiff(geoms, geom_possible$x)
     )
   })
-
+  
   # Module chart controls : title, xlabs, colors, export...
   paramsChart <- reactiveValues(inputs = NULL)
   paramsChart <- callModule(
@@ -224,24 +224,41 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
     )
   })
   
-  output$datatable <- DT::renderDT({
-    paramsChart$data
-  })
+  output$datatable <-
+    DT::renderDT({paramsChart$data}, 
+                 filter = 'top',
+                 extensions = c('Buttons',  'ColReorder', 'FixedHeader', 'KeyTable'),
+                 options = list(
+                   dom = 'lBfrtip',
+                   buttons = c('csv', 'excel', 'copy', 'colvis'),
+                   colReorder = TRUE,
+                   keys = TRUE,
+                   lengthMenu = list(
+                     c(25, 50, 100, 1000, 5000, 10000),
+                     c('25', '50', '100', '1000', '5000', '10000')
+                   ),
+                   pageLength = 25,
+                   autoWidth = TRUE,
+                   searchHighlight = TRUE,
+                   fixedHeader = TRUE,
+                   search = list(regex = TRUE, caseInsensitive = TRUE)),
+                 class = 'table-condensed cell-border stripe', 
+                 escape = FALSE, rownames = FALSE)
   
   output$plotly <- plotly::renderPlotly({
     plotly::ggplotly(ggplotCall$ggobj$plot)
   })
-
+  
   
   output$plooooooot <- renderPlot({
     
     ggplotCall$ggobj$plot
   })
-
-
+  
+  
   # Close addin
   observeEvent(input$close, shiny::stopApp())
-
+  
   # Ouput of module (if used in Shiny)
   output_module <- reactiveValues(code_plot = NULL, code_filters = NULL, data = NULL)
   observeEvent(ggplotCall$code, {
@@ -251,7 +268,7 @@ esquisserServer <- function(input, output, session, data = NULL, dataModule = c(
     output_module$code_filters <- reactiveValuesToList(paramsChart$code)
     output_module$data <- paramsChart$data
   }, ignoreInit = TRUE)
-
+  
   return(output_module)
 }
 

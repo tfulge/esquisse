@@ -248,7 +248,10 @@ chartControlsServer <- function(input, output, session,
     module = filterDF, 
     id = "filter-data", 
     data_table = data_table, 
-    data_name = data_name
+    data_name = data_name,
+    # XD: this should be set from esquisse module call and propogate to this level
+    drop_ids = FALSE,
+    picker = TRUE
   )
   
   outin <- reactiveValues(
